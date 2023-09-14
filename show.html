@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rohit's Shoe Deal Finder</title>
+    <style>
+        /* Add your CSS styles for a better UI here */
+        .product-card {
+            border: 1px solid #ccc;
+            margin: 10px;
+            padding: 10px;
+            display: inline-block;
+        }
+
+        .product-image {
+            max-width: 100px;
+            max-height: 100px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            background-color: #ff5722;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background-image: url('https://www.highsnobiety.com/static-assets/dato/1680268809-nike-sb-dunk-high-three-bears.jpg'); /* Replace 'your-background-image.jpg' with your image URL */
+            background-position: center; /* Moves the background image to the center */
+            background-size: cover; /* Ensures the background image covers the entire element */
+        }
+
+
+    </style>
+</head>
+<body>
+        <h1>Rohit's Shoe Finder</h1>
+
+    <div id="result-container">
+        <!-- Results will be displayed here -->
+    </div>
+    <script>
+        // Make the AJAX request to the API using the provided cURL command
+        fetch('https://www.shoedealfinder.com/api/catalogue/query/1/10000/all?sort_by=position&sort_order=-1&loc=IN&brand=nike&sizes&discount=60', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+                'Origin': 'https://shoedealfinder.com',
+                'Pragma': 'no-cache',
+                'Referer': 'https://shoedealfinder.com/',
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'same-site',
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Process and display the response data
+            const resultContainer = document.getElementById('result-container');
+            const products = data.result;
+
+            products.forEach(resultItem => {
+                resultItem.channelDetails.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.classList.add('product-card');
+
+                    const productName = document.createElement('h2');
+                    productName.textContent = product.productName;
+
+                    const productImage = document.createElement('img');
+                    productImage.classList.add('product-image');
+                    productImage.src = product.imagesLink[0];
+                    
+
+                    const productDetails = document.createElement('div');
+                    productDetails.innerHTML = `
+                        <p><strong>Channel:</strong> ${product.channelName}</p>
+                        <p><strong>Section:</strong> ${product.section}</p>
+                        <p><strong>Product Size:</strong> ${product.productSize.join(', ')}</p>
+                        <p><strong>Min Price Link:</strong> <a href="${product.minPriceLink}" target="_blank">Buy Now</a></p>
+                        <p><strong>MRP:</strong> ₹${product.minPrice.prePrice}</p>
+                        <p style="color:red;"><strong >Discount:</strong> ${product.minPrice.discountPct}</p>
+                        <p><strong>Min Price Sort:</strong> ${product.minPriceSort}</p>
+                    `;
+
+                    productCard.appendChild(productImage);
+                    productCard.appendChild(productName);
+                    productCard.appendChild(productDetails);
+
+                    resultContainer.appendChild(productCard);
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+    </script>
+</body>
+</html>
