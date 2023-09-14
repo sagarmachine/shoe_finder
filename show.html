@@ -43,10 +43,28 @@
 
     <div id="result-container">
         <!-- Results will be displayed here -->
+        <p>
+            <a style="color:red"; href="?brand=nike" target="_blank">NIKE</a>
+            <a style="color:green"; href="?brand=adidas" target="_blank">ADIDAS</a>
+            <a style="color:purple"; href="?brand=air-jordan" target="_blank">AIR JORDAN</a>
+            <a style="color:orange"; href="?brand=puma" target="_blank">PUMA</a>  
+        </p>
     </div>
     <script>
+        const url = new URL(window.location.href);
+
+        // Create a URLSearchParams object from the URL
+        const searchParams = url.searchParams;
+
+        // Access the variables by their names
+        var reqBrand = searchParams.get("brand");
+
+        var effectiveBrand = null
+
+        if(reqBrand == null) effectiveBrand = 'nike'; else effectiveBrand = reqBrand;
+
         // Make the AJAX request to the API using the provided cURL command
-        fetch('https://www.shoedealfinder.com/api/catalogue/query/1/10000/all?sort_by=position&sort_order=-1&loc=IN&brand=nike&brand=air-jordan&brand=adidas&sizes&discount=50', {
+        fetch('https://www.shoedealfinder.com/api/catalogue/query/1/10000/all?sort_by=position&sort_order=-1&loc=IN&brand='+effectiveBrand+'&sizes&discount=50', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
